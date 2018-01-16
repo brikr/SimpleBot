@@ -191,7 +191,7 @@ function mods(bot) {
 				if(jailedUser.roles.find(r => r.name == "Mod")) {
 					command.message.reply("Can't gay baby jail another mod.");
 				} else {
-					command.channel.send("User `" + jailedUsername + "` is going to gay baby jailed for `" + timeNumber + " " + timeText +"`!").then(msg => {
+					command.channel.send("User `" + jailedUsername + "` is going to gay baby jail for `" + timeNumber + " " + timeText +"`!").then(msg => {
 						jailedUser.addRole(bot.guild.roles.get("354711424364183575")).then(role => {
 							json.data.gbj.push({
 								"id": jailedUser.id,
