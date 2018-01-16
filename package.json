@@ -1,0 +1,16 @@
+{
+  "name": "SimpleBot",
+  "description": "Enhancing your SimpleFlips experience.",
+  "version": "2.0.0",
+  "dependencies": {
+    "discord.js": "^11.2",
+    "node-opus": "^0.2",
+    "nodejs-websocket": "^1.7",
+    "opusscript": "0.0.4",
+    "request": "^2.83",
+    "uws": "^8.14",
+    "youtube-dl": "^1.12",
+    "ytdl-core": "^0.18"
+  },
+  "devDependencies": {}
+}
