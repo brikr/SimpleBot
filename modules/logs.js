@@ -162,7 +162,7 @@ function logs(bot) {
 					"User": message.author.username
 				}, {
 					"Deleted": message.content
-				}]
+				}],
 			});
 		}
 	});

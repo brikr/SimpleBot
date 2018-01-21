@@ -27,9 +27,7 @@ function fun(bot) {
 	});
 
 	// The simps command
-	bot.addCommand("simps", {
-		DM: true
-	}, command => {
+	bot.addCommand("simps", {}, command => {
 		fs.readdir("files/" + folders.simps + "/", (err, files) => {
 			var file = files[Math.floor(Math.random() * files.length)]; // Get a random file
 			command.channel.startTyping();
@@ -44,9 +42,7 @@ function fun(bot) {
 	});
 	
 	// The info command
-	bot.addCommand("info", {
-		DM: false
-	}, command => {
+	bot.addCommand("info", {}, command => {
 		const infoEmbed = new bot.Embed();
 
 		infoEmbed.setAuthor("Server Stats", bot.guild.iconURL);
@@ -58,9 +54,7 @@ function fun(bot) {
 	});
 
 	// The save command
-	bot.addCommand("save", {
-		DM: false
-	}, command => {
+	bot.addCommand("save", {}, command => {
 		if(command.isMod) {
 			if(command.message.attachments.size > 0) {
 				const pictureToSave = command.message.attachments.first();
@@ -81,9 +75,7 @@ function fun(bot) {
 	});
 
 	// The gay command
-	bot.addCommand("gay", {
-		DM: true
-	}, command => {
+	bot.addCommand("gay", {}, command => {
 		command.message.reply("no u");
 	});
 }
