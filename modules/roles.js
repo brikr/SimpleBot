@@ -45,10 +45,24 @@ function roles(bot) {
 
 		if(command.message.member.roles.has(notificationRole.id)) {
 			command.message.member.removeRole(notificationRole);
-			command.message.reply("You will no longer receive a notification for streams.");
+			command.message.reply("You will no longer receive a notification for SimpleFlips's streams.");
 		} else {
 			command.message.member.addRole(notificationRole);
-			command.message.reply("You will now receive a notification for streams!");
+			command.message.reply("You will now receive a notification for SimpleFlips's streams!");
+		}
+	});
+
+
+	// Toggle the loohtify role
+	bot.addCommand("loohtify", {}, command => {
+		const notificationRole = bot.guild.roles.get("405458226780307472");
+
+		if(command.message.member.roles.has(notificationRole.id)) {
+			command.message.member.removeRole(notificationRole);
+			command.message.reply("You will no longer receive a notification for Looh's streams.");
+		} else {
+			command.message.member.addRole(notificationRole);
+			command.message.reply("You will now receive a notification for Looh's streams!");
 		}
 	});
 }
