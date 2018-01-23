@@ -6,51 +6,58 @@ const request = require('request');
 
 function streams(bot) {
 	// API keys and shit
-	const channelID = bot.config.channel_id;
+	const channelsID = bot.config.channels_id;
 	const clientID = bot.config.client_id;
-	var lastStreamID = "";
-
-	// Options used by the request module
-	const requestOptions = {
-		uri: "https://api.twitch.tv/kraken/streams/" + channelID,
-		headers: {
-			'Accept': "application/vnd.twitchtv.v5+json",
-			'Client-ID': clientID
-		}
-	};
+	var lastStreamID = [];
 
 	// Function that will be called every minutes
 	function twitchRequest() {
-		request.get(requestOptions, function(err, response, body) {
-			if(!err) { // Make sure the request went well
-				var stream = null;
+		for(channel in channelsID) {
+			var channelID = channelsID[channel];
 
-				// Sometimes the code would crash due to bad parsing here
-				try {
-					stream = JSON.parse(body).stream;
-				} catch(e) {}
-
-				// Make sure a stream is on
-				if(stream != null) {
-					if(lastStreamID != stream.id) { // Make sure this stream hasn't been announced yet
-						var streamEmbed = simplebot.createEmbed();
-
-						streamEmbed.addField("Now Playing", stream.game);
-						streamEmbed.addField("Stream Title", stream.channel.status);
-						streamEmbed.addField("Followers", stream.channel.followers.toLocaleString('en'), true);
-						streamEmbed.addField("Total Views", stream.channel.views.toLocaleString('en'), true);
-						streamEmbed.setThumbnail(stream.channel.logo);
-						streamEmbed.setFooter("Stream started at");
-						streamEmbed.setTimestamp(stream.created_at);
-
-						// At last, send the notification
-						bot.guild.channels.get(bot.channels.notification).send("<@&344292325423316992>\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
-							lastStreamID = stream.id; // Make sure it doesn't post it twice
-						});
-					}
+			// Options used by the request module
+			var requestOptions = {
+				uri: "https://api.twitch.tv/kraken/streams/" + channelID,
+				headers: {
+					'Accept': "application/vnd.twitchtv.v5+json",
+					'Client-ID': clientID
 				}
-			} 
-		});
+			};
+
+			request.get(requestOptions, function(err, response, body) {
+				if(!err) { // Make sure the request went well
+					var stream = null;
+
+					// Sometimes the code would crash due to bad parsing here
+					try {
+						stream = JSON.parse(body).stream;
+					} catch(e) {}
+
+					// Make sure a stream is on
+					if(stream != null) {
+						if(lastStreamID[channel] != stream.id) { // Make sure this stream hasn't been announced yet
+							var streamEmbed = simplebot.createEmbed();
+
+							streamEmbed.addField("Now Playing", stream.game);
+							streamEmbed.addField("Stream Title", stream.channel.status);
+							streamEmbed.addField("Followers", stream.channel.followers.toLocaleString('en'), true);
+							streamEmbed.addField("Total Views", stream.channel.views.toLocaleString('en'), true);
+							streamEmbed.setThumbnail(stream.channel.logo);
+							streamEmbed.setFooter("Stream started at");
+							streamEmbed.setTimestamp(stream.created_at);
+
+							// Role to notify
+							var notificationString = channel == 0 ? "344292325423316992" : "405458226780307472";
+
+							// At last, send the notification
+							bot.guild.channels.get(bot.channels.notification).send("<@&" + notificationString + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
+								lastStreamID[channel] = stream.id; // Make sure it doesn't post it twice
+							});
+						}
+					}
+				} 
+			});
+		}
 	}
 
 	setInterval(() => {
