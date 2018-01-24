@@ -25,18 +25,12 @@ function SimpleBot() {
 		Embed: function() {
 			return new Discord.RichEmbed();
 		},
-		commands: []
+		commands: [],
+		modulesLoaded: false
 	};
 
 	// Login
-	client.login(bot.config.discord_key);
-
-	// Loading modules
-	fs.readdir("modules", (err, files) => {
-		files.forEach(file => {
-			require("./modules/" + file)(bot);
-		});
-	});
+	client.login(bot.config.discord_key);	
 
 	/*
 		Event handlers
@@ -46,6 +40,21 @@ function SimpleBot() {
 	client.on("ready", () => {
 		// Prepare some variables
 		bot.guild = client.guilds.get("137567383215800320");
+
+		// Loading modules
+		if(!bot.modulesLoaded) {
+			fs.readdir("modules", (err, files) => {
+				files.forEach(file => {
+					require("./modules/" + file)(bot);
+				});
+			});
+
+			/*
+				I use a variable here so this function doesn't run twice,
+				the "ready" event can get triggered when the bot disconnect/reconnect
+			*/
+			bot.modulesLoaded = true;
+		}
 
 		// Change SimpleBot avatar every 5 minutes
 		setInterval(() => { 

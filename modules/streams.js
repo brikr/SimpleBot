@@ -35,23 +35,23 @@ function streams(bot) {
 
 					// Make sure a stream is on
 					if(stream != null) {
-						if(lastStreamID[channel] != stream.id) { // Make sure this stream hasn't been announced yet
-							var streamEmbed = simplebot.createEmbed();
+						if(lastStreamID[channel] != stream._id) { // Make sure this stream hasn't been announced yet
+							var streamEmbed = new bot.Embed();
 
 							streamEmbed.addField("Now Playing", stream.game);
 							streamEmbed.addField("Stream Title", stream.channel.status);
 							streamEmbed.addField("Followers", stream.channel.followers.toLocaleString('en'), true);
 							streamEmbed.addField("Total Views", stream.channel.views.toLocaleString('en'), true);
 							streamEmbed.setThumbnail(stream.channel.logo);
-							streamEmbed.setFooter("Stream started at");
+							streamEmbed.setFooter("Stream started");
 							streamEmbed.setTimestamp(stream.created_at);
 
 							// Role to notify
 							var notificationString = channel == 0 ? "344292325423316992" : "405458226780307472";
 
 							// At last, send the notification
-							bot.guild.channels.get(bot.channels.notification).send("<@&" + notificationString + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
-								lastStreamID[channel] = stream.id; // Make sure it doesn't post it twice
+							bot.client.channels.get(bot.channels.lounge).send("<@&" + notificationString + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
+								lastStreamID[channel] = stream._id; // Make sure it doesn't post it twice
 							});
 						}
 					}
