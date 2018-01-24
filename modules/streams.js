@@ -50,7 +50,7 @@ function streams(bot) {
 							var notificationString = channel == 0 ? "344292325423316992" : "405458226780307472";
 
 							// At last, send the notification
-							bot.client.channels.get(bot.channels.lounge).send("<@&" + notificationString + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
+							bot.client.channels.get(bot.channels.notification).send("<@&" + notificationString + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
 								lastStreamID[channel] = stream._id; // Make sure it doesn't post it twice
 							});
 						}
