@@ -48,7 +48,7 @@ function streams(bot) {
 							streamEmbed.setTimestamp(stream.created_at);
 
 							// At last, send the notification
-							bot.client.channels.get(bot.channels.notification).send("<@&" + notificationString + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
+							bot.client.channels.get(bot.channels.notification).send("<@&" + channel.role + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
 								lastStreamID[channelID] = stream._id; // Make sure it doesn't post it twice
 							});
 						}
