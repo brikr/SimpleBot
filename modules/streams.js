@@ -6,14 +6,15 @@ const request = require('request');
 
 function streams(bot) {
 	// API keys and shit
-	const channelsID = bot.config.channels_id;
+	const streamChannels = bot.config.stream_channels;
 	const clientID = bot.config.client_id;
 	var lastStreamID = [];
 
 	// Function that will be called every minutes
 	function twitchRequest() {
-		for(channel in channelsID) {
-			var channelID = channelsID[channel];
+		for(sc in streamChannels) {
+			const channel = streamChannels[sc]
+			const channelID = channel.id;
 
 			// Options used by the request module
 			var requestOptions = {
@@ -35,7 +36,7 @@ function streams(bot) {
 
 					// Make sure a stream is on
 					if(stream != null) {
-						if(lastStreamID[channel] != stream._id) { // Make sure this stream hasn't been announced yet
+						if(lastStreamID[channelID] != stream._id) { // Make sure this stream hasn't been announced yet
 							var streamEmbed = new bot.Embed();
 
 							streamEmbed.addField("Now Playing", stream.game);
@@ -46,12 +47,9 @@ function streams(bot) {
 							streamEmbed.setFooter("Stream started");
 							streamEmbed.setTimestamp(stream.created_at);
 
-							// Role to notify
-							var notificationString = channel == 0 ? "344292325423316992" : "405458226780307472";
-
 							// At last, send the notification
 							bot.client.channels.get(bot.channels.notification).send("<@&" + notificationString + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
-								lastStreamID[channel] = stream._id; // Make sure it doesn't post it twice
+								lastStreamID[channelID] = stream._id; // Make sure it doesn't post it twice
 							});
 						}
 					}
