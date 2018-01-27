@@ -11,35 +11,58 @@ function fun(bot) {
 		pictures: "pictures"
 	};
 
+	// Cooldown for commands
+	var cooldown = new Map();
+
 	// Generate the meme screenshot commands
 	fs.readdir("files/" + folders.pictures + "/", (err, files) => {
 		files.forEach(file => {
-			bot.addCommand(path.basename("files/" + folders.pictures + "/" + file, ".png"), {
-				DM: true
+			const commandName = path.basename("files/" + folders.pictures + "/" + file, ".png");
+
+			bot.addCommand(commandName, {
+				DM: true,
+				remove: true
 			}, command => {
-				command.channel.send("", {
-					files:[{
-						attachment: "files/" + folders.pictures + "/" + file
-					}]
-				});
+				// Is the current command in a cooldown ?
+				if(cooldown.has(commandName)) {
+					command.message.reply("Wait `" + parseInt(cooldown.get(commandName)) + " second(s)` before using this command again.").then(message => {
+						setTimeout(() => {
+							message.delete();
+						}, 2000);
+					});
+				} else {
+					command.channel.send("", {
+						files:[{
+							attachment: "files/" + folders.pictures + "/" + file
+						}]
+					});
+
+					const cooldownInterval = setInterval(() => {
+						var secondsLeft = cooldown.has(commandName) ? cooldown.get(commandName) : 15;
+						secondsLeft -= 1;
+
+						if(secondsLeft == 0) {
+							cooldown.delete(commandName);
+							clearInterval(cooldownInterval);
+						} else {
+							cooldown.set(commandName, secondsLeft);
+						}
+					}, 1000);
+				}
 			});
 		});
 	});
 
 	// The simps command
-	bot.addCommand("simps", {}, command => {
-		fs.readdir("files/" + folders.simps + "/", (err, files) => {
-			var file = files[Math.floor(Math.random() * files.length)]; // Get a random file
-			command.channel.startTyping();
-			command.channel.send("", {
-				files:[{
-					attachment: "files/" + folders.simps + "/" + file
-				}]
-			}).then(m => {
-				command.channel.stopTyping();
-			});
-		});
-	});
+	/*bot.addCommand("simps", {}, command => {
+		files = fs.readdirSync("files/" + folders.simps);
+
+		const SimpsEmbed = new bot.Embed();
+		SimpsEmbed.setTile("SimpleFlips collection");
+		SimpsEmbed.setImage("files/" + files[0]);
+
+		console.log(files);
+	});*/
 	
 	// The info command
 	bot.addCommand("info", {}, command => {
