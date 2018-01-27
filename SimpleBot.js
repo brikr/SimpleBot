@@ -3,7 +3,7 @@
 */
 
 const Discord = require('discord.js'),
-	  fs = require('fs');
+	fs = require('fs');
 
 // The whole bot brain is there
 function SimpleBot() {
