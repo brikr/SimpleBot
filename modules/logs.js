@@ -15,7 +15,7 @@ function logs(bot) {
 		userJoined: "#4CAF50",
 		userUpdate: "#9C27B0",
 		userRemove: "#FFC107",
-		userBan: "#F44336",
+		userBanned: "#F44336",
 		userUnban: "#FFFFFF",
 		nicknameUpdate: "#9C27B0",
 		messageRemove: "#FF5722",
