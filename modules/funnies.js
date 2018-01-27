@@ -52,17 +52,6 @@ function fun(bot) {
 			});
 		});
 	});
-
-	// The simps command
-	/*bot.addCommand("simps", {}, command => {
-		files = fs.readdirSync("files/" + folders.simps);
-
-		const SimpsEmbed = new bot.Embed();
-		SimpsEmbed.setTile("SimpleFlips collection");
-		SimpsEmbed.setImage("files/" + files[0]);
-
-		console.log(files);
-	});*/
 	
 	// The info command
 	bot.addCommand("info", {}, command => {
