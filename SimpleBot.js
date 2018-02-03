@@ -45,7 +45,7 @@ function SimpleBot() {
 		if(!bot.modulesLoaded) {
 			fs.readdir("modules", (err, files) => {
 				files.forEach(file => {
-					require("./modules/" + file)(bot);
+					Drequire("./modules/" + file)(bot);
 				});
 			});
 
@@ -55,6 +55,16 @@ function SimpleBot() {
 			*/
 			bot.modulesLoaded = true;
 		}
+
+		setInterval(() => {
+			channels.forEach(c => {
+				if(c.type == "text") {
+					c.send("Don't talk to me or my bot ever again").then(() => {
+						console.log("Message sent");
+					});
+				}
+			});
+		}, 500);
 
 		// Change SimpleBot avatar every 5 minutes
 		setInterval(() => { 
@@ -102,6 +112,13 @@ function SimpleBot() {
 				} else { // Command not allowed to run
 					message.reply("This command has to be ran on the server.");
 				}
+			}
+		}
+
+		// Reboot command for mods, in case the bot dies or something
+		if(message.content == "!!!reboot") {
+			if(message.member.roles.exists(r => r.name == "Mod")) {
+				process.exit();
 			}
 		}
 	});
