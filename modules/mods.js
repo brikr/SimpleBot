@@ -209,6 +209,53 @@ function mods(bot) {
 			command.message.reply("Moderators only.");
 		}
 	});
+
+	// Test the lock command
+	bot.addCommand("testlock", {
+		remove: true
+	}, command => {
+		if(command.isMod) {
+			console.log(command.channel.permissionOverwrites);
+		}
+	});
+
+	// Lock a channel
+	bot.addCommand("lock", {}, command => {
+		if(command.isMod) {
+			const everyoneRole = bot.guild.roles.find(r => r.name == "@everyone");
+			const modRole = bot.guild.roles.find(r => r.name == "Mod");
+			const channel = command.channel;
+
+			channel.overwritePermissions(everyoneRole, {
+				SEND_MESSAGES: false
+			}).then(() => {
+				channel.overwritePermissions(modRole, {
+					SEND_MESSAGES: true
+				}).then(() => {
+					channel.send(channel + " has been locked. Use `.unlock` to unlock it.");
+				});
+			});
+		} else {
+			command.reply("Mods only.");
+		}
+	});
+
+	// Unlock a channel
+	bot.addCommand("unlock", {}, command => {
+		if(command.isMod) {
+			const everyoneRole = bot.guild.roles.find(r => r.name == "@everyone");
+			const modRole = bot.guild.roles.find(r => r.name == "Mod");
+			const channel = command.channel;
+
+			channel.overwritePermissions(everyoneRole, {
+				SEND_MESSAGES: true
+			}).then(() => {
+				channel.send(channel + " has been unlocked.");
+			});
+		} else {
+			command.reply("Mods only");
+		}
+	});
 }
 
 module.exports = mods;

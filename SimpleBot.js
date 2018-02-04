@@ -107,6 +107,8 @@ function SimpleBot() {
 
 		// Reboot command for mods, in case the bot dies or something
 		if(message.content == "!!!reboot") {
+			message.delete();
+			
 			if(message.member.roles.exists(r => r.name == "Mod")) {
 				process.exit();
 			}
