@@ -25,7 +25,7 @@ function logs(bot) {
 	var userBanned = false; // Shitty hack so the code doesn't logs a user being banned twice (Ban + Leave event)
 
 	// Main logging command
-	function log(options) {
+	bot.log = function(options) {
 		const logEmbed = new bot.Embed(); // Create an empty RichEmbed
 
 		// Set some data
@@ -63,7 +63,7 @@ function logs(bot) {
 		if(creationDate.getFullYear() == todayDate.getFullYear() && creationDate.getMonth() == todayDate.getMonth() && creationDate.getDay() == todayDate.getDay()) {
 			member.ban("Account created today, probably a troll account.");
 		} else {
-			log({
+			bot.log({
 				color: colors.userJoined,
 				channel: channels.users,
 				thumbnail: member.user.avatarURL,
@@ -79,7 +79,7 @@ function logs(bot) {
 	// User's nickname is changed
 	bot.client.on("guildMemberUpdate", (oldMember, newMember) => {
 		if(oldMember.nickname != newMember.nickname) {
-			log({
+			bot.log({
 				color: colors.nicknameUpdate,
 				channel: channels.updates,
 				thumbnail: newMember.user.avatarURL,
@@ -95,7 +95,7 @@ function logs(bot) {
 	// User leave the server
 	bot.client.on("guildMemberRemove", member => {
 		if(!userBanned) { // If an user has been ban, don't log it twice 
-			log({
+			bot.log({
 				color: colors.userRemove,
 				channel: channels.users,
 				thumbnail: member.user.avatarURL,
@@ -111,32 +111,43 @@ function logs(bot) {
 	// User got banned
 	bot.client.on("guildBanAdd", (guild, user) => {
 		userBanned = true;
-		log({
-			color: colors.userBanned,
-			channel: channels.users,
-			thumbnail: user.avatarURL,
-			fields: [{
-				"User Banned": user.username
-			}]
+
+		bot.guild.fetchAuditLogs({type: 22, limit: 1}).then(audit => {
+			var whoBanned = audit.entries.first().executor;
+
+			bot.log({
+				color: colors.userBanned,
+				channel: channels.users,
+				thumbnail: user.avatarURL,
+				fields: [{
+					"User Banned": user.username,
+					"By": whoBanned.username
+				}]
+			});
 		});
 	});
 
 	// User got unbanned
 	bot.client.on("guildBanRemove", (guild, user) => {
-		log({
-			color: colors.userUnban,
-			channel: channels.users,
-			thumbnail: user.avatarURL,
-			fields: [{
-				"User Unbanned": user.username
-			}]
+		bot.guild.fetchAuditLogs({type: 23, limit: 1}).then(audit => {
+			var whoUnbanned = audit.entries.first().executor;
+
+			bot.log({
+				color: colors.userUnban,
+				channel: channels.users,
+				thumbnail: user.avatarURL,
+				fields: [{
+					"User Unbanned": user.username,
+					"By": whoUnbanned.username
+				}]
+			});
 		});
 	});
 
 	// Message got edited/updated
 	bot.client.on("messageUpdate", (oldMessage, newMessage) => {
 		if(oldMessage.content != newMessage.content && (oldMessage.content.length < 1024 && oldMessage.content.length > 0) && (newMessage.content.length < 1024 && newMessage.content.length > 0)) {
-			log({
+			bot.log({
 				color: colors.messageUpdate,
 				channel: channels.messages,
 				thumbnail: newMessage.author.avatarURL,
@@ -154,7 +165,7 @@ function logs(bot) {
 	// Message got deleted
 	bot.client.on("messageDelete", message => {
 		if(!message.content.startsWith(".") && !message.author.bot && message.content.length > 0 && message.content.length < 1024) {
-			log({
+			bot.log({
 				color: colors.messageRemove,
 				channel: channels.messages,
 				thumbnail: message.author.avatarURL,
@@ -170,7 +181,7 @@ function logs(bot) {
 	// User changed their username
 	bot.client.on("userUpdate", (oldUser, newUser) => {
 		if(oldUser.username != newUser.username) {
-			log({
+			bot.log({
 				color: colors.userUpdate,
 				channel: channels.updates,
 				thumbnail: newUser.avatarURL,

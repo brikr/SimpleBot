@@ -155,9 +155,9 @@ function mods(bot) {
 
 	bot.addCommand("gbj", {}, command => {
 		if(command.isMod) {
-			if(command.message.mentions.members.size > 0 && command.params.length > 1) {
+			if(command.message.mentions.members.size > 0 && command.params.length > 2) {
 				// Getting the last params, getting the letter and the number.
-				const timeString = command.text.split(" ").splice(2).join(" ");
+				const timeString = command.text.split(" ").splice(2, 1).join(" ");
 				const timeLetter = timeString.charAt(timeString.length - 1).toLowerCase();
 				const timeNumber = timeString.substring(0, timeString.length - 1);
 
@@ -188,25 +188,38 @@ function mods(bot) {
 				const jailedUser = command.message.mentions.members.first();
 				const jailedUsername = jailedUser.nickname ? jailedUser.nickname : jailedUser.user.username; // Check if there's a nickname first
 
+				// Get the reason
+				const gbjReason = command.params.slice(2);
+
 				if(jailedUser.roles.find(r => r.name == "Mod")) {
 					command.message.reply("Can't gay baby jail another mod.");
 				} else {
-					command.channel.send("User `" + jailedUsername + "` is going to gay baby jail for `" + timeNumber + " " + timeText +"`!").then(msg => {
-						jailedUser.addRole(bot.guild.roles.get("354711424364183575")).then(role => {
-							json.data.gbj.push({
-								"id": jailedUser.id,
-								"timeLeft": timeLeft
-							});
+					jailedUser.addRole(bot.guild.roles.get("354711424364183575")).then(role => {
+						json.data.gbj.push({
+							"id": jailedUser.id,
+							"timeLeft": timeLeft
 						});
+					});
+
+					bot.log({
+						color: "#FF9800",
+						channel: "410309727487131678",
+						thumbnail: jailedUser.user.avatarURL,
+						fields: [{
+							"User": jailedUsername,
+							"GBJ for": timeNumber + " " + timeText,
+							"By": command.member,
+							"For": gbjReason
+						}]
 					});
 				}
 
 				command.message.delete();
-			} else {
-				command.message.reply("You need to mention the user.");
+			} else  {
+				command.reply("Correct format: `.gbj <mention> <number><s/m/h/d> <reason>`");
 			}
 		} else {
-			command.message.reply("Moderators only.");
+			command.reply("Moderators only.");
 		}
 	});
 
@@ -219,11 +232,15 @@ function mods(bot) {
 		}
 	});
 
+	/*
+		To recode someday so only dad and mom can use it
+	*/
+
+	/*
 	// Lock a channel
 	bot.addCommand("lock", {}, command => {
-		if(command.isMod) {
+		if(command.message.member) {
 			const everyoneRole = bot.guild.roles.find(r => r.name == "@everyone");
-			const modRole = bot.guild.roles.find(r => r.name == "Mod");
 			const channel = command.channel;
 
 			channel.overwritePermissions(everyoneRole, {
@@ -256,6 +273,7 @@ function mods(bot) {
 			command.reply("Mods only");
 		}
 	});
+	*/
 }
 
 module.exports = mods;

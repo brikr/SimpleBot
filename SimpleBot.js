@@ -81,16 +81,21 @@ function SimpleBot() {
 				if(message.guild || options.DM) { // Is the message sent in a server or is allowed to be ran in DMs
 					// Data send to the function handling the command
 					const commandData = {
+						params: params,
 						message: message,
 						text: message.content,
+						member: message.member,
 						channel: message.channel,
-						params: params
-					}
+						reply: message.reply
+					};
 
 					// Is the user a mod ?
 					if(message.member.roles.exists(role => role.name == "Mod")) {
 						commandData.isMod = true;
 					}
+
+					// Is the user an admin ?
+					//if(message.member)
 
 					// Run the command's function
 					bot.commands[command].command(commandData);

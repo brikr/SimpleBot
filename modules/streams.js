@@ -55,7 +55,10 @@ function streams(bot) {
 								// At last, send the notification
 								bot.client.channels.get(bot.channels.notification).send("<@&" + channel.role + ">\n" + stream.channel.display_name + " just went live!\nWatch the stream at " + stream.channel.url, streamEmbed).then(() => {
 									lastStreamID[channelID] = stream._id; // Make sure it doesn't post it twice
-									notificationRole.setMentionable(false); // Make sure the role cannot be mentionned again
+									
+									setTimeout(() => {
+										notificationRole.setMentionable(false); // Make sure the role cannot be mentionned again
+									}, 1000*60);
 								});
 							});							
 						}
