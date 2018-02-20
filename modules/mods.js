@@ -189,7 +189,9 @@ function mods(bot) {
 				const jailedUsername = jailedUser.nickname ? jailedUser.nickname : jailedUser.user.username; // Check if there's a nickname first
 
 				// Get the reason
-				const gbjReason = command.params.slice(2);
+				// .slice(2) on params will return the rest of the params array
+				// when cast to a string, this will join with newline by default, so we join with space
+				const gbjReason = command.params.slice(2).join(" ");
 
 				if(jailedUser.roles.find(r => r.name == "Mod")) {
 					command.message.reply("Can't gay baby jail another mod.");
