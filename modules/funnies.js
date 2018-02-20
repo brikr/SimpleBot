@@ -31,13 +31,25 @@ function fun(bot) {
 						}, 2000);
 					});
 				} else {
-					command.channel.send("", {
-						files:[{
-							attachment: "files/" + folders.pictures + "/" + file
-						}]
-					});
+					const outputFile = {
+						files: []
+					};
 
-					const cooldownInterval = setInterval(() => {
+					if((commandName == "shh" || commandName == "shh_blur") && !command.isMod) {
+						outputFile.files[0] = {
+							attachment: "files/" + folders.pictures + "/shh_blur.png"
+						}
+					} else {
+						outputFile.files[0] = {
+							attachment: "files/" + folders.pictures + "/" + file
+						}
+					}
+					
+					command.channel.send("", outputFile);
+
+					const cooldownInterval = setInterval(cooldownFunction, 1000);
+
+					function cooldownFunction() {
 						var secondsLeft = cooldown.has(commandName) ? cooldown.get(commandName) : 15;
 						secondsLeft -= 1;
 
@@ -47,7 +59,9 @@ function fun(bot) {
 						} else {
 							cooldown.set(commandName, secondsLeft);
 						}
-					}, 1000);
+					}
+
+					cooldownFunction();					
 				}
 			});
 		});

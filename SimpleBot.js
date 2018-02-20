@@ -86,7 +86,12 @@ function SimpleBot() {
 						text: message.content,
 						member: message.member,
 						channel: message.channel,
-						reply: message.reply
+						reply: message.reply,
+						delete: function(message, seconds) {
+							setTimeout(() => {
+								message.delete();
+							}, seconds*1000);
+						} 
 					};
 
 					// Is the user a mod ?

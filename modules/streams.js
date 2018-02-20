@@ -17,7 +17,7 @@ function streams(bot) {
 			const channelID = channel.id;
 
 			// Options used by the request module
-			var requestOptions = {
+			let requestOptions = {
 				uri: "https://api.twitch.tv/kraken/streams/" + channelID,
 				headers: {
 					'Accept': "application/vnd.twitchtv.v5+json",
@@ -37,7 +37,7 @@ function streams(bot) {
 					// Make sure a stream is on
 					if(stream != null) {
 						if(lastStreamID[channelID] != stream._id) { // Make sure this stream hasn't been announced yet
-							var streamEmbed = new bot.Embed();
+							const streamEmbed = new bot.Embed();
 
 							streamEmbed.addField("Now Playing", stream.game);
 							streamEmbed.addField("Stream Title", stream.channel.status);

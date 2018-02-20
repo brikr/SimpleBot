@@ -34,7 +34,7 @@ function mods(bot) {
 					const gayBabyRole = bot.guild.roles.get("354711424364183575"); // The Role
 
 					if(babyMember.roles.exists(role => role == gayBabyRole)) { // Make sure the user is still gay baby jailed
-						if(jailedBaby.timeLeft - 1 == 0 || jailedBaby.timeLeft <= 0 || jailedBaby.timeLeft == null) { // If the gay baby needs to be freed
+						if(jailedBaby.timeLeft - 1 == 0 || jailedBaby.timeLeft <= 0 || jailedBaby.timeLeft == null || jailedBaby.timeLeft == "null") { // If the gay baby needs to be freed
 							babyMember.removeRole(gayBabyRole);
 							json.data.gbj.splice(baby, 1);
 						} else {
